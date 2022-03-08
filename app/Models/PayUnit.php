@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class PayUnit extends Model
 {
     use HasFactory;
-    public $apiKey;
+
+  public $apiKey;
   public $apiPassword;
   public $apiUser;
   public $returnUrl;
@@ -30,7 +32,7 @@ class PayUnit extends Model
    * @param string $currency currency
    * @param string $name Marchant Name
    */
-  function __construct($apiKey, $apiPassword, $apiUser, $returnUrl, $notifyUrl, $mode, $description, $purchaseRef, $currency, $name, $transactionId)
+  function __construct($apiKey, $apiPassword, $apiUser, $returnUrl, $notifyUrl, $mode, $description, $purchaseRef, $currency, $name)
   {
     $this->apiKey      = $apiKey;
     $this->apiPassword = $apiPassword;
@@ -42,7 +44,6 @@ class PayUnit extends Model
     $this->purchaseRef   = $purchaseRef;
     $this->currency   = $currency;
     $this->name   = $name;
-    $this->transactionId   = $transactionId;
   }
   /**
    * Used to perform the Transaction
@@ -50,6 +51,7 @@ class PayUnit extends Model
   public function makePayment($amountTobePaid)
   {
 
+    $this->transactionId = uniqid();
     $encodedAuth         = base64_encode($this->apiUser . ":" . $this->apiPassword);
     $postRequest         = array(
       "total_amount" => $amountTobePaid,
@@ -59,8 +61,9 @@ class PayUnit extends Model
       "purchaseRef" => $this->purchaseRef,
       "name" => $this->name,
       "description" => $this->description,
-      "transaction_id" => $this->transactionId
+      "transaction_id" => $this->transactionId,
     );
+
 
     $cURLConnection      = curl_init();
     curl_setopt($cURLConnection, CURLOPT_URL, "https://app.payunit.net/api/gateway/initialize");
@@ -77,16 +80,12 @@ class PayUnit extends Model
     curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
     $apiResponse = curl_exec($cURLConnection);
     curl_close($cURLConnection);
-
     $jsonArrayResponse = json_decode($apiResponse);
-
-
     if (isset($jsonArrayResponse->data->transaction_url)) {
       header("Location: {$jsonArrayResponse->data->transaction_url}");
       exit();
-    } else {
-      header("Location: " . sprintf("%s?" . http_build_query(["status" => $jsonArrayResponse->status, "message" => $jsonArrayResponse->message, 'transaction_id' => $postRequest['transaction_id']]),  $postRequest['return_url'] ?? 'https://app.payunit.net'));
-      exit();
-    }
+    } 
+
+    echo $apiResponse;
   }
 }

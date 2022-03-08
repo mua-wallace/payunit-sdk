@@ -15,8 +15,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('posts.index');
 });
 
 
-Route::post('/makePayment', [DonationController::class, 'donate']);
+// Route::get('/po', function () {
+//     return view('welcome');
+// });
+
+
+Route::post('/makePayment', [DonationController::class, 'donate'])->name('makePayment');
+
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
