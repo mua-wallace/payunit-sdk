@@ -28,3 +28,7 @@ Route::post('/makePayment', [DonationController::class, 'donate'])->name('makePa
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

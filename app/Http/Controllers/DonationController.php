@@ -23,7 +23,7 @@ class DonationController extends Controller
             env("API_USER"),
             "http://localhost:8000/welcome",
             "",
-            "live",
+            "test",
             "",
             "",
             "XAF",
