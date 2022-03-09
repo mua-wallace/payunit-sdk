@@ -16,12 +16,13 @@ class DonationController extends Controller
 
 
     public function donate(Request $request) {
+        // /home/muawallace/Projects/NestJS/ArtisanInspire/sdk/resources/views/response.blade.php
         
         $myPayment = new PayUnit(
             env("API_KEY"),
             env("API_SECRET"),
             env("API_USER"),
-            "http://localhost:8000/welcome",
+            "http://127.0.0.1:8000/success",
             "",
             "test",
             "",

@@ -84,8 +84,7 @@ class PayUnit extends Model
     if (isset($jsonArrayResponse->data->transaction_url)) {
       header("Location: {$jsonArrayResponse->data->transaction_url}");
       exit();
-    } 
-
+    }
     echo $apiResponse;
   }
 }
