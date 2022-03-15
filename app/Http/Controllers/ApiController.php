@@ -5,27 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class HomeController extends Controller
-{
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public $response = [];
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+class ApiController extends Controller
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
-    {
-        return view('home');
+{
+    public $serverResponse = [];
+
+    public function __construct()  {
+
     }
 
     public function initialize(Request $request) {
@@ -45,7 +31,8 @@ class HomeController extends Controller
             "return_url"=> $request->return_url
         ]);
     
-        $response = $response->json();
+        $this->$serverResponse = $response->json();
+
         return $response;
     }
 
@@ -59,9 +46,9 @@ class HomeController extends Controller
             'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
             'mode' => 'test'
          ])->get('https://app.payunit.net/api/gateway/gateways',[
-             "t_url" => $this->$response->data->t_url,
-             "t_id" => $this->$response->data->t_id,
-             "t_sum" => $this->$response->data->t_sum
+             "t_url" => $this->$this->$serverResponse->data->t_url,
+             "t_id" => $this->$this->$serverResponse->data->t_id,
+             "t_sum" => $this->$this->$serverResponse->data->t_sum
     
          ]);
          return $response->json();

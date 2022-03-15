@@ -14,8 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
 Route::get('/', function () {
     return view('posts.index');
+});
+
+Route::get('/success', function () {
+    return view('response');
 });
 
 
@@ -29,6 +37,3 @@ Route::post('/makePayment', [DonationController::class, 'donate'])->name('makePa
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
