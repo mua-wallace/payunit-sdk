@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Initialze;
-use App\Models\InitialzedData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 
 {
+
     public function initialize(Request $request)
     {
 
@@ -19,65 +17,70 @@ class ApiController extends Controller
             "total_amount" => 'required|integer',
             "return_url" => 'required|string'
         ]);
+
         $request['currency'] = 'XAF';
+
+        return $this->initializeRequest($request);
+    }
+
+    public function initializeRequest($data)
+    {
         $apibasic = 'payunit_sand_A6Db0FGsw:d86d7f17-4d42-43c5-84f6-6bf9de8ac126';
         $base64 = base64_encode($apibasic);
-        $welikemoney = $request->total_amount + 700;
-
-
-        $initialise = new Initialze;
-        $initialise->transaction_id = $request->transaction_id;
-        $initialise->total_amount = $request->total_amount;
-        $initialise->currency = $request->currency;
-        $initialise->return_url = $request->return_url;
-        $initialise->notify_url = $request->notify_url;
-        $initialise->name = $request->name;
-        $initialise->description = $request->description;
-        $initialise->purchaseRef = $request->purchaseRef;
-        $initialise->save();
-
-
-        $response = Http::withHeaders([
+        $welikemoney = $data->total_amount + 700;
+        return Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => 'Basic ' . $base64,
             'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
             'mode' => 'test'
         ])->post('https://app.payunit.net/api/gateway/initialize', [
-            "transaction_id" => $request->transaction_id,
+            "transaction_id" => $data->transaction_id,
             "total_amount" => $welikemoney,
-            "currency" => $request->currency,
-            "return_url" => $request->return_url
+            "currency" => $data->currency,
+            "return_url" => $data->return_url
         ]);
-
-
-        $initialiseData = new InitialzedData;
-        $initialiseData->t_url = $response['data']['t_url'];
-        $initialiseData->t_id = $response['data']['t_id'];
-        $initialiseData->t_sum = $response['data']['t_sum'];
-        $initialiseData->transaction_id = $response['data']['transaction_id'];
-
-        $initialiseData->save();
-
-        return $initialise;
     }
 
-    public function getAllPSP()
+    public function getAllPSPAndInitialise(Request $request)
     {
+
+        $request->validate([
+            "transaction_id" => 'required|string',
+            "total_amount" => 'required|integer',
+            "return_url" => 'required|string'
+        ]);
+
+        $request['currency'] = 'XAF';
+
         $apibasic = 'payunit_sand_A6Db0FGsw:d86d7f17-4d42-43c5-84f6-6bf9de8ac126';
         $base64 = base64_encode($apibasic);
 
-        if (response(200)) {
 
+        $req = new Request([
+            "transaction_id" => "22222222222222222222267",
+            "total_amount" => 100,
+            "currency" => "XAF",
+            "return_url" => "http://localhost:4000"
+        ]);
 
-            // $initialiseData = DB::select('select * from users where id = ?', [1]);
+        $res = $this->initializeRequest($req);
+
+        if ($res->ok()) {
+
+            $resInitialise = $res->json();
+
+            $initialiseData = [
+                "t_url" => $resInitialise['data']['t_url'],
+                "t_id" => $resInitialise['data']['t_id'],
+                "t_sum" => $resInitialise['data']['t_sum']
+            ];
 
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Basic ' . $base64,
                 'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
                 'mode' => 'test'
-            ])->get('https://app.payunit.net/api/gateway/gateways',[]
-            );
+            ])->get('https://app.payunit.net/api/gateway/gateways', $initialiseData);
 
             return $response->json();
         }

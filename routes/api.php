@@ -22,7 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/initialize', [ApiController::class, 'initialize']);
  
-Route::get('/getAllPSP', [ApiController::class, 'getAllPSP'] );
+// Route::post('/initialize', [TestController::class, 'initialize']);
+
+Route::post('/getAllPSP', [ApiController::class, 'getAllPSP'] );
 
 Route::post('/makepayment', [ApiController::class, 'makepayment']);
 
