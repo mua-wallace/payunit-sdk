@@ -13,12 +13,12 @@ class ApiController extends Controller
     private function requestHeader()
     {
         
-        $apibasic = 'payunit_sand_A6Db0FGsw:d86d7f17-4d42-43c5-84f6-6bf9de8ac126';
+        $apibasic = env('API_BASIC');
         $base64 = base64_encode($apibasic);
         return Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => 'Basic ' . $base64,
-            'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
+            'x-api-key' => env('X_API_KEY'),
             'mode' => 'test'
         ]);
     }
