@@ -6,11 +6,23 @@ use App\Models\Initialze;
 use App\Models\InitialzedData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
-
 {
+    private $base_url = 'https://app.payunit.net/api';
+    private function initResquest()
+    {
+        
+        $apibasic = 'payunit_sand_A6Db0FGsw:d86d7f17-4d42-43c5-84f6-6bf9de8ac126';
+        $base64 = base64_encode($apibasic);
+        return Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Basic ' . $base64,
+            'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
+            'mode' => 'test'
+        ]);
+    }
+
     public function initialize(Request $request)
     {
 
@@ -24,7 +36,6 @@ class ApiController extends Controller
         $base64 = base64_encode($apibasic);
         $welikemoney = $request->total_amount + 700;
 
-
         $initialise = new Initialze;
         $initialise->transaction_id = $request->transaction_id;
         $initialise->total_amount = $request->total_amount;
@@ -35,7 +46,6 @@ class ApiController extends Controller
         $initialise->description = $request->description;
         $initialise->purchaseRef = $request->purchaseRef;
         $initialise->save();
-
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -55,34 +65,38 @@ class ApiController extends Controller
         $initialiseData->t_id = $response['data']['t_id'];
         $initialiseData->t_sum = $response['data']['t_sum'];
         $initialiseData->transaction_id = $response['data']['transaction_id'];
-
         $initialiseData->save();
 
-        return $initialise;
+        return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id,$initialiseData->t_sum);
     }
 
-    public function getAllPSP()
+
+
+    public function getAllPSP($t_url, $t_id, $t_sum)
     {
         $apibasic = 'payunit_sand_A6Db0FGsw:d86d7f17-4d42-43c5-84f6-6bf9de8ac126';
         $base64 = base64_encode($apibasic);
 
-        if (response(200)) {
+        // $initialiseData = DB::select('select * from users where id = ?', [1]);
 
+        // $response = Http::withHeaders([
+        //     'Content-Type' => 'application/json',
+        //     'Authorization' => 'Basic ' . $base64,
+        //     'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
+        //     'mode' => 'test'
+        // ])->get('https://app.payunit.net/api/gateway/gateways', [
+        //     't_url' => $t_url,
+        //     't_id' => $t_id,
+        //     't_sum' => $t_sum
+        // ]);
 
-            // $initialiseData = DB::select('select * from users where id = ?', [1]);
+        $response = $this->initResquest()->get($this->base_url . '/gateway/gateways', [
+            't_url' => $t_url,
+            't_id' => $t_id,
+            't_sum' => $t_sum
+        ]);
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Basic ' . $base64,
-                'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
-                'mode' => 'test'
-            ])->get('https://app.payunit.net/api/gateway/gateways',[]
-            );
-
-            return $response->json();
-        }
-
-        return 'not ok';
+        return $response->json();
     }
 
     public function makepayment(Request $request)
