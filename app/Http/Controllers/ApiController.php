@@ -12,7 +12,7 @@ class ApiController extends Controller
     private $baseUrl = 'https://app.payunit.net/api';
     private function requestHeader()
     {
-        
+
         $apibasic = env('API_BASIC');
         $base64 = base64_encode($apibasic);
         return Http::withHeaders([
@@ -44,7 +44,7 @@ class ApiController extends Controller
         $initialise->purchaseRef = $request->purchaseRef;
         $initialise->save();
 
-        $response = $this->requestHeader()->post($this->baseUrl.'/gateway/initialize', [
+        $response = $this->requestHeader()->post($this->baseUrl . '/gateway/initialize', [
             "transaction_id" => $request->transaction_id,
             "total_amount" => $welikemoney,
             "currency" => $request->currency,
@@ -58,14 +58,14 @@ class ApiController extends Controller
         $initialiseData->transaction_id = $response['data']['transaction_id'];
         $initialiseData->save();
 
-        return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id,$initialiseData->t_sum);
+        return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
     }
 
 
 
     public function getAllPSP($t_url, $t_id, $t_sum)
     {
-        $response = $this->requestHeader()->get($this->baseUrl . '/gateway/gateways', [
+        $response = $this->requestHeader()->get($this->baseUrl. '/gateway/gateways', [
             't_url' => $t_url,
             't_id' => $t_id,
             't_sum' => $t_sum
@@ -76,22 +76,28 @@ class ApiController extends Controller
 
     public function makepayment(Request $request)
     {
-        $response = $this->requestHeader()->post($this->baseUrl.'/gateway/makepayment', [
-            "gateway" => $request->gateway,
-            "amount" => $request->amount,
-            "transaction_id" => $request->transaction_id,
-            "phone_number" => $request->phone_number,
-            "currency" => $request->currency,
-            "paymentType" => $request->paymentType,
-            "name" => $request->name,
-            "notify_url" => $request->notify_url
-        ]);
-        return $response->json();
+        $transca = InitialzedData::where('transaction_id', '=', $request->transaction_id)->first();
+        // dd($transca->initialize->total_amount);
+
+        if($transca) {
+            $response = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', [
+                "gateway" => $request->gateway,
+                "amount" => $transca->initialize->total_amount,
+                "transaction_id" => $transca->initialize->transaction_id,
+                "phone_number" => $request->phone_number,
+                "currency" => $transca->initialize->currency,
+                "paymentType" => $request->paymentType,
+                "name" => $transca->initialize->name,
+                "notify_url" => $transca->initialize->notify_url
+            ]); 
+            return $response->json();
+        }  
+        
     }
 
     public function status()
     {
-        $response = $this->requestHeader()->get($this->baseUrl.'/gateway/gateways', [
+        $response = $this->requestHeader()->get($this->baseUrl . '/gateway/gateways', [
             "gateway" => $this->$this->$res->data->gateway,
             "transaction_id" => $this->$this->$res->data->transaction_id,
             "pay_token" => $this->$this->$res->data->pay_token,
