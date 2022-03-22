@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Initialze;
 use App\Models\InitialzedData;
+use App\Models\MtnsucesssData;
+use Error;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -58,6 +61,8 @@ class ApiController extends Controller
         $initialiseData->transaction_id = $response['data']['transaction_id'];
         $initialiseData->save();
 
+        // return $response->json();
+
         return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
     }
 
@@ -77,31 +82,51 @@ class ApiController extends Controller
     public function makepayment(Request $request)
     {
         $transca = InitialzedData::where('transaction_id', '=', $request->transaction_id)->first();
-        // dd($transca->initialize->total_amount);
 
-        if($transca) {
-            $response = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', [
-                "gateway" => $request->gateway,
-                "amount" => $transca->initialize->total_amount,
-                "transaction_id" => $transca->initialize->transaction_id,
-                "phone_number" => $request->phone_number,
-                "currency" => $transca->initialize->currency,
-                "paymentType" => $request->paymentType,
-                "name" => $transca->initialize->name,
-                "notify_url" => $transca->initialize->notify_url
-            ]); 
-            return $response->json();
-        }  
-        
-    }
+        $transca1 = MtnsucesssData::where('transaction_id', '=', $request->transaction_id)->first();
 
-    public function status()
+
+        // dd($transca1);
+
+
+        // dd($transca->initialize);
+
+
+            if($transca) {
+                $response = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', [
+                    "gateway" => $request->gateway,
+                    "amount" => $transca->initialize->total_amount,
+                    "transaction_id" => $transca->initialize->transaction_id,
+                    "phone_number" => $request->phone_number,
+                    "currency" => $transca->initialize->currency,
+                    "paymentType" => $request->paymentType,
+                    "name" => $transca->initialize->name,
+                    "notify_url" => $transca->initialize->notify_url
+                ]); 
+      
+                if($request->gateway == 'mtnmomo') {
+                    $mtnsuccessdata = new MtnsucesssData;
+                    $mtnsuccessdata->gateway = $request->gateway;
+                    $mtnsuccessdata->status = $response['status'];
+                    $mtnsuccessdata->message = $response['message'];
+                    $mtnsuccessdata->payment_ref = $response['data']['payment_ref'];
+                    $mtnsuccessdata->transaction_id = $response['data']['transaction_id'];
+                    $mtnsuccessdata->pay_token= $response['data']['pay_token'];
+                    // $mtnsuccessdata->save();
+                } 
+
+                // return $transca1;
+                return $this->getpaymentstatus($mtnsuccessdata->gateway, $mtnsuccessdata->transaction_id, $mtnsuccessdata->pay_token, $mtnsuccessdata->payment_ref);
+
+                // return $mtnsuccessdata;
+            } 
+        }
+
+   public function getpaymentstatus($gateway, $transactionId, $payToken, $paymentRef)
     {
-        $response = $this->requestHeader()->get($this->baseUrl . '/gateway/gateways', [
-            "gateway" => $this->$this->$res->data->gateway,
-            "transaction_id" => $this->$this->$res->data->transaction_id,
-            "pay_token" => $this->$this->$res->data->pay_token,
-            "pay_ref" => $this->$this->$res->data->pay_ref
+        $response = $this->requestHeader()->get($this->baseUrl . '/gateway/paymentstatus/' . $gateway . '/' . $transactionId, [
+            "pay_token" => $payToken,
+            "pay_ref" => $paymentRef
 
         ]);
         return $response->json();
