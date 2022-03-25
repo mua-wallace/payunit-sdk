@@ -15,8 +15,4 @@ class Initialze extends Model
      */
     protected $table = 'initializer';
     protected $fillable = ['transaction_id','total_amount', 'currency', 'return_url', 'notify_url', 'name', 'description', 'purchaseRef' ];
-
-    
-
-    public $timestamps = false;
 }

@@ -17,7 +17,11 @@ class CreateOrangesucessdataTable extends Migration
             $table->id();
             $table->string('status');
             $table->text('auth_token');
-
+            $table->string('transaction_id');
+            $table->mediumText('x_token');
+            $table->string('paytoken');
+            $table->mediumText('message');
+            $table->mediumText('redirect_url');
             $table->timestamps();
         });
     }

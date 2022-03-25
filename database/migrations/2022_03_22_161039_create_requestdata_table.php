@@ -14,7 +14,7 @@ class CreateRequestdataTable extends Migration
     public function up()
     {
         Schema::create('requestdata', function (Blueprint $table) {
-            $table->id();
+            // $table->id();
             $table->string('transaction_id')->primary();
             $table->string('total_amount')->nullable();
             $table->string('currency')->nullable();
