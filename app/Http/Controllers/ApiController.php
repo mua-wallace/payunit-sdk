@@ -103,8 +103,8 @@ class ApiController extends Controller
                     "name" => $transca->initialize->name,
                     "notify_url" => $transca->initialize->notify_url
                 ]); 
-      
-                if($request->gateway == 'mtnmomo') {
+
+                if($request->gateway=='mtnmomo') {
                     $mtnsuccessdata = new MtnsucesssData;
                     $mtnsuccessdata->gateway = $request->gateway;
                     $mtnsuccessdata->status = $response['status'];
@@ -112,8 +112,9 @@ class ApiController extends Controller
                     $mtnsuccessdata->payment_ref = $response['data']['payment_ref'];
                     $mtnsuccessdata->transaction_id = $response['data']['transaction_id'];
                     $mtnsuccessdata->pay_token= $response['data']['pay_token'];
-                    // $mtnsuccessdata->save();
-                } 
+                    $mtnsuccessdata->save();
+                }
+                
 
                 // return $transca1;
                 return $this->getpaymentstatus($mtnsuccessdata->gateway, $mtnsuccessdata->transaction_id, $mtnsuccessdata->pay_token, $mtnsuccessdata->payment_ref);
