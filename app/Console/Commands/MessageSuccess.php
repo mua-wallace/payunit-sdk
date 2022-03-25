@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Console\Command;
 
 class MessageSuccess extends Command
@@ -38,5 +39,7 @@ class MessageSuccess extends Command
     public function handle()
     {
         info('Your transaction was successful');
+        $status = new ApiController();
+        $response = $status->transactionStatus();
     }
 }
