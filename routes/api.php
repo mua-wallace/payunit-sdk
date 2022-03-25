@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/initialize', [ApiController::class, 'initialize']);
+
+Route::get('/tstatus', [ApiController::class, 'transactionStatus']);
  
 // Route::post('/initialize', [TestController::class, 'initialize']);
 
