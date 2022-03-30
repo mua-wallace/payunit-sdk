@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Initialze;
 use App\Models\InitialzedData;
 use App\Models\MtnsucesssData;
+use App\Models\OrangesucesssData;
+use Illuminate\Support\Facades\DB;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
@@ -103,17 +105,30 @@ class ApiController extends Controller
                     "name" => $transca->initialize->name,
                     "notify_url" => $transca->initialize->notify_url
                 ]); 
-      
+
                 if($request->gateway == 'mtnmomo') {
                     $mtnsuccessdata = new MtnsucesssData;
                     $mtnsuccessdata->gateway = $request->gateway;
-                    $mtnsuccessdata->status = $response['status'];
+                    $mtnsuccessdata->status = 'PENDING';
                     $mtnsuccessdata->message = $response['message'];
                     $mtnsuccessdata->payment_ref = $response['data']['payment_ref'];
                     $mtnsuccessdata->transaction_id = $response['data']['transaction_id'];
                     $mtnsuccessdata->pay_token= $response['data']['pay_token'];
-                    // $mtnsuccessdata->save();
+                    $mtnsuccessdata->save();
                 } 
+                // else  {
+                //     $orangesucessdata = new OrangesucesssData();
+                //     $orangesucessdata->gateway = $request->gateway;
+                //     $orangesucessdata->status = $response['status'];
+                //     $orangesucessdata->message = $response['message'];
+                //     $orangesucessdata->transaction_id = $response['data']['transaction_id'];
+                //     $orangesucessdata->auth_token = $response['data']['auth-token'];
+                //     $orangesucessdata->paytoken= $response['data']['paytoken'];
+                //     $orangesucessdata->x_token= $response['data']['x-token'];
+                //     $orangesucessdata->save();
+
+                // }
+                
 
                 // return $transca1;
                 return $this->getpaymentstatus($mtnsuccessdata->gateway, $mtnsuccessdata->transaction_id, $mtnsuccessdata->pay_token, $mtnsuccessdata->payment_ref);
@@ -129,6 +144,56 @@ class ApiController extends Controller
             "pay_ref" => $paymentRef
 
         ]);
-        return $response->json();
-    }
+
+        
+        return $response->json();    }
+
+
+
+
+        public function transactionStatus()
+        {
+            // $status = DB::select('select * from mtnsucessdata where status');
+            $datas = MtnsucesssData::where('status', '=', 'SUCCESS')->get();
+            $count = count($datas);
+            $number_new_success_transaction = 0;
+            $number_new_failed_transaction = 0;
+            $number_pedding_transaction = 0;
+            if($datas) {
+
+                foreach($datas as $data) {
+
+                    $response = $this->getpaymentstatus($data['gateway'], $data['transaction_id'], $data['pay_token'], $data['payment_ref']);
+                    if(isset($response['message'])) {
+
+                        $transaction = MtnsucesssData::where('transaction_id', '=', $data['transaction_id'])->first();
+                        if(str_contains($response['message'], 'successful')) {
+
+                            $number_new_success_transaction++;
+                            $transaction->status = 'SUCCESS';
+                            $transaction->save();
+            
+                            // Send sms or email to customer
+                        } else if(str_contains($response['message'], 'failed')) {
+
+                            $number_new_failed_transaction++;
+                            $transaction->status = 'FAILED';
+                            $transaction->save();
+                            
+                            // Send sms or email to customer
+                        } else {
+
+                            $number_pedding_transaction++;
+                        }
+                    }
+                }
+            }
+     
+            return [
+                'Old_pending_transactions' => $count,
+                'New_pending_transactions' => $number_pedding_transaction,
+                'New_success_transactions' => $number_new_success_transaction,
+                'New_failed_transactions' => $number_pedding_transaction
+            ];
+        }
 }

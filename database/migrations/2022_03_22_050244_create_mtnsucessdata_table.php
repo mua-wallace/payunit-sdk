@@ -14,12 +14,11 @@ class CreateMtnsucessdataTable extends Migration
     public function up()
     {
         Schema::create('mtnsucessdata', function (Blueprint $table) {
-            $table->id();
             $table->string('gateway');
             $table->string('status');
             $table->text('message');
             $table->string('payment_ref');
-            $table->string('transaction_id')->unique();
+            $table->string('transaction_id')->primary();
             $table->text('pay_token');
             $table->timestamps();
         });
