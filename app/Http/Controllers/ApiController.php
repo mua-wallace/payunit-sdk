@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Initialze;
 use App\Models\InitialzedData;
 use App\Models\MtnsucesssData;
-use App\Models\OrangesucesssData;
-use Illuminate\Support\Facades\DB;
-use Error;
-use Exception;
+use App\Models\ResponseData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -43,7 +40,7 @@ class ApiController extends Controller
         $initialise->total_amount = $request->total_amount;
         $initialise->currency = $request->currency;
         $initialise->return_url = $request->return_url;
-        $initialise->notify_url = $request->notify_url;
+        $initialise->notify_url = "http://localhost:4000";
         $initialise->name = $request->name;
         $initialise->description = $request->description;
         $initialise->purchaseRef = $request->purchaseRef;
@@ -72,7 +69,7 @@ class ApiController extends Controller
 
     public function getAllPSP($t_url, $t_id, $t_sum)
     {
-        $response = $this->requestHeader()->get($this->baseUrl. '/gateway/gateways', [
+        $response = $this->requestHeader()->get($this->baseUrl . '/gateway/gateways', [
             't_url' => $t_url,
             't_id' => $t_id,
             't_sum' => $t_sum
@@ -85,115 +82,119 @@ class ApiController extends Controller
     {
         $transca = InitialzedData::where('transaction_id', '=', $request->transaction_id)->first();
 
-        $transca1 = MtnsucesssData::where('transaction_id', '=', $request->transaction_id)->first();
+        $requestData = [
+            "gateway" => $request->gateway,
+            "amount" => $transca->initialize->total_amount,
+            "transaction_id" => $transca->initialize->transaction_id,
+            "phone_number" => $request->phone_number,
+            "currency" => $transca->initialize->currency,
+            "paymentType" => $request->paymentType,
+            "name" => $transca->initialize->name,
+            "notify_url" => $transca->initialize->notify_url
+        ];
 
+        $resData = [];
+        $saveResponse = new ResponseData;
+        $saveResponse->gateway = $request->gateway;
 
-        // dd($transca1);
-
-
-        // dd($transca->initialize);
-
-
-            if($transca) {
-                $response = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', [
-                    "gateway" => $request->gateway,
-                    "amount" => $transca->initialize->total_amount,
-                    "transaction_id" => $transca->initialize->transaction_id,
-                    "phone_number" => $request->phone_number,
-                    "currency" => $transca->initialize->currency,
-                    "paymentType" => $request->paymentType,
-                    "name" => $transca->initialize->name,
-                    "notify_url" => $transca->initialize->notify_url
-                ]); 
-
-                if($request->gateway == 'mtnmomo') {
-                    $mtnsuccessdata = new MtnsucesssData;
-                    $mtnsuccessdata->gateway = $request->gateway;
-                    $mtnsuccessdata->status = 'PENDING';
-                    $mtnsuccessdata->message = $response['message'];
-                    $mtnsuccessdata->payment_ref = $response['data']['payment_ref'];
-                    $mtnsuccessdata->transaction_id = $response['data']['transaction_id'];
-                    $mtnsuccessdata->pay_token= $response['data']['pay_token'];
-                    $mtnsuccessdata->save();
-                } 
-                // else  {
-                //     $orangesucessdata = new OrangesucesssData();
-                //     $orangesucessdata->gateway = $request->gateway;
-                //     $orangesucessdata->status = $response['status'];
-                //     $orangesucessdata->message = $response['message'];
-                //     $orangesucessdata->transaction_id = $response['data']['transaction_id'];
-                //     $orangesucessdata->auth_token = $response['data']['auth-token'];
-                //     $orangesucessdata->paytoken= $response['data']['paytoken'];
-                //     $orangesucessdata->x_token= $response['data']['x-token'];
-                //     $orangesucessdata->save();
-
-                // }
-                
-
-                // return $transca1;
-                return $this->getpaymentstatus($mtnsuccessdata->gateway, $mtnsuccessdata->transaction_id, $mtnsuccessdata->pay_token, $mtnsuccessdata->payment_ref);
-
-                // return $mtnsuccessdata;
-            } 
+        if ($transca && $request->gateway === 'mtnmomo') {
+            $resData = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', $requestData);
+            $saveResponse->payment_ref = $resData['data']['payment_ref'];
+            $saveResponse->pay_token = $resData['data']['pay_token'];
         }
 
-   public function getpaymentstatus($gateway, $transactionId, $payToken, $paymentRef)
+        if ($transca && $request->gateway === 'orange') {
+            $resData = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', $requestData);
+            // $saveResponse->auth_token = $resData['data']['auth-token'];
+            // $saveResponse->paytoken = $resData['data']['paytoken'];
+            // $saveResponse->x_token = $resData['data']['x-token'];
+        }
+
+        $saveResponse->transaction_id = $resData['data']['transaction_id'] ?? '';
+        $saveResponse->status = $resData['status'] ?? 'FAILED';
+        $saveResponse->message = $resData['message'] ?? 'No Provider was selected';
+        $saveResponse->save();
+ion
+
+
+        // return $resData;
+        // return $saveResponse;
+
+        if ($saveResponse && $saveResponse->gateway === 'mtnmomo') {
+            return $this->getpaymentstatus($saveResponse->gateway, $saveResponse->transaction_id, $saveResponse->pay_token, $saveResponse->payment_ref);
+        }
+
+        if ($saveResponse && $saveResponse->gateway === 'orange') {
+            return $this->getpaymentstatus($saveResponse->gateway, $saveResponse->transaction_id, $saveResponse->paytoken, $saveResponse->auth_token, $saveResponse->x_token);
+        }
+    }
+    // dd($transca->initialize);
+
+
+
+    public function getpaymentstatus($gateway, $transactionId, $payToken, $paymentRef)
     {
         $response = $this->requestHeader()->get($this->baseUrl . '/gateway/paymentstatus/' . $gateway . '/' . $transactionId, [
             "pay_token" => $payToken,
-            "pay_ref" => $paymentRef
+            "payment_ref" => $paymentRef
 
         ]);
 
-        
-        return $response->json();    }
+
+        return $response->json();
+    }
 
 
 
 
-        public function transactionStatus()
-        {
-            // $status = DB::select('select * from mtnsucessdata where status');
-            $datas = MtnsucesssData::where('status', '=', 'SUCCESS')->get();
-            $count = count($datas);
-            $number_new_success_transaction = 0;
-            $number_new_failed_transaction = 0;
-            $number_pedding_transaction = 0;
-            if($datas) {
+    public function transactionStatus()
+    {
+        // $status = DB::select('select * from mtnsucessdata where status');
+        $datas = MtnsucesssData::where('status', '=', 'SUCCESS')->get();
+        $count = count($datas);
+        $number_new_success_transaction = 0;
+        $number_new_failed_transaction = 0;
+        $number_pedding_transaction = 0;
+        if ($datas) {
 
-                foreach($datas as $data) {
+            foreach ($datas as $data) {
 
-                    $response = $this->getpaymentstatus($data['gateway'], $data['transaction_id'], $data['pay_token'], $data['payment_ref']);
-                    if(isset($response['message'])) {
+                $response = $this->getpaymentstatus($data['gateway'], $data['transaction_id'], $data['pay_token'], $data['payment_ref']);
+                if (isset($response['message'])) {
 
-                        $transaction = MtnsucesssData::where('transaction_id', '=', $data['transaction_id'])->first();
-                        if(str_contains($response['message'], 'successful')) {
+                    $transaction = MtnsucesssData::where('transaction_id', '=', $data['transaction_id'])->first();
+                    if (str_contains($response['message'], 'successful')) {
 
-                            $number_new_success_transaction++;
-                            $transaction->status = 'SUCCESS';
-                            $transaction->save();
-            
-                            // Send sms or email to customer
-                        } else if(str_contains($response['message'], 'failed')) {
+                        $number_new_success_transaction++;
+                        $transaction->status = 'SUCCESS';
+                        $transaction->save();
 
-                            $number_new_failed_transaction++;
-                            $transaction->status = 'FAILED';
-                            $transaction->save();
-                            
-                            // Send sms or email to customer
-                        } else {
+                        // Send sms or email to customer
+                    } else if (str_contains($response['message'], 'failed')) {
 
-                            $number_pedding_transaction++;
-                        }
+                        $number_new_failed_transaction++;
+                        $transaction->status = 'FAILED';
+                        $transaction->save();
+
+                        // Send sms or email to customer
+                    } else {
+
+                        $number_pedding_transaction++;
                     }
                 }
             }
-     
-            return [
-                'Old_pending_transactions' => $count,
-                'New_pending_transactions' => $number_pedding_transaction,
-                'New_success_transactions' => $number_new_success_transaction,
-                'New_failed_transactions' => $number_pedding_transaction
-            ];
         }
+
+        return [
+            'Old_pending_transactions' => $count,
+            'New_pending_transactions' => $number_pedding_transaction,
+            'New_success_transactions' => $number_new_success_transaction,
+            'New_failed_transactions' => $number_pedding_transaction
+        ];
+    }
+
+    public  function test()
+    {
+        return ['name' => 'wallice'];
+    }
 }

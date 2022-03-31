@@ -15,6 +15,22 @@ class CreateResponsedataTable extends Migration
     {
         Schema::create('responsedata', function (Blueprint $table) {
             $table->id();
+            $table->string('transaction_id');
+            $table->string('status');
+            $table->string('message');
+
+            $table->mediumText('payment_ref')->nullable();
+            $table->mediumText('pay_token')->nullable();
+            $table->string('gateway')->nullable();
+
+            $table->mediumText('auth_token')->nullable();
+            $table->mediumText('paytoken')->nullable();
+            $table->mediumText('x-token')->nullable();
+
+            $table->string('provider_short_tag')->nullable();
+            $table->string('provider_logo')->nullable();
+
+
             $table->timestamps();
         });
     }

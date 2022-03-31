@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ResponseData extends Model
 {
     use HasFactory;
+
+    protected $table = 'responsedata';
 }
