@@ -1,0 +1,227 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Payunit REST API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/initializerrr": {
+            "post": {
+                "tags": [
+                    "payunit"
+                ],
+                "summary": "Initialize payment",
+                "description": "Initialize payment",
+                "requestBody": {
+                    "description": "Pass initialize  credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "transaction_id",
+                                    "total_amount",
+                                    "currency",
+                                    "return_url"
+                                ],
+                                "properties": {
+                                    "transaction_id": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "123456789101112"
+                                    },
+                                    "total_amount": {
+                                        "type": "integer",
+                                        "format": "string",
+                                        "example": "2000"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "XAF or USD"
+                                    },
+                                    "return_url": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "http://localhost:4000"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "mtn or orange etc"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "Your description"
+                                    },
+                                    "purchaseRef": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "any_reference_number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong  transaction_id or total_amount, currency or return_url. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "List of all marks or a single mark",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": "200"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Transaction  has been successfully initiated!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/initialize": {
+            "post": {
+                "tags": [
+                    "payunit"
+                ],
+                "summary": "Initialize payment",
+                "description": "Initialize payment",
+                "requestBody": {
+                    "description": "Pass initialize  credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "transaction_id",
+                                    "total_amount",
+                                    "currency",
+                                    "return_url"
+                                ],
+                                "properties": {
+                                    "transaction_id": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "123456789101112"
+                                    },
+                                    "total_amount": {
+                                        "type": "integer",
+                                        "format": "string",
+                                        "example": "2000"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "XAF or USD"
+                                    },
+                                    "return_url": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "http://localhost:4000"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "mtn or orange etc"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "Your description"
+                                    },
+                                    "purchaseRef": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "any_reference_number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "description": "Wrong credentials response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong  transaction_id or total_amount, currency or return_url. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "List of all marks or a single mark",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": "200"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Transaction  has been successfully initiated!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

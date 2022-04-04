@@ -31,3 +31,6 @@ Route::post('/getAllPSP', [ApiController::class, 'getAllPSP'] );
 Route::post('/makepayment', [ApiController::class, 'makepayment']);
 
 
+Route::get('/test', [ApiController::class, 'test']);
+
+

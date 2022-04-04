@@ -9,7 +9,8 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
   <!-- Styles -->
   <style>
     /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -19,7 +20,8 @@
     }
 
     body {
-      margin: 0
+      margin: 0;
+
     }
 
     a {
@@ -401,6 +403,29 @@
     body {
       font-family: 'Nunito', sans-serif;
     }
+
+
+
+input {
+  width: 21rem;
+  height: 4rem;
+  font-size: 2.07rem;
+  border-radius: 8px;
+  padding: 1rem;
+  border: solid black;
+  text-align: center;
+  background: #6397d682;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+button {
+  border: none;
+  padding: 1rem;
+  width: 21.2rem;
+  font-size: 1.2em;
+  border-radius: 0.2rem;
+  cursor: pointer;
+}
   </style>
 </head>
 

@@ -9,8 +9,57 @@ use App\Models\ResponseData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+/**
+     * @OA\Post(
+     * path="/api/initializerrr",
+     * summary="Initialize payment",
+     * description="Initialize payment",
+     * tags={"payunit"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass initialize  credentials",
+     *    @OA\JsonContent(
+     *       required={"transaction_id","total_amount", "currency", "return_url"},
+     *       @OA\Property(property="transaction_id", type="string", format="string", example="123456789101112"),
+     *       @OA\Property(property="total_amount", type="integer", format="string", example="2000"),
+     *       @OA\Property(property="currency", type="string", format="string", example="XAF or USD"),
+     *       @OA\Property(property="return_url", type="string", format="string", example="http://localhost:4000"),
+     *       @OA\Property(property="name", type="string", format="string", example="mtn or orange etc"),
+     *       @OA\Property(property="description", type="string", format="string", example="Your description"),
+     *       @OA\Property(property="purchaseRef", type="string", format="string", example="any_reference_number"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong  transaction_id or total_amount, currency or return_url. Please try again"),
+     *    ),
+     * ),
+     *  @OA\Response(
+     *    response=200,
+     *    description="List of all marks or a single mark",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="error", type="boolean", example="false"),
+     *       @OA\Property(property="status_code", type="integer", example="200"),
+     *       @OA\Property(property="status", type="string", example="success"),
+     *       @OA\Property(property="message", type="string", example="Transaction  has been successfully initiated!"),
+     *    )
+     * ),
+     * )
+     */
+
+
+
+
 class ApiController extends Controller
 {
+
+
+
+
+
+
     private $baseUrl = 'https://app.payunit.net/api';
     private function requestHeader()
     {
@@ -25,8 +74,12 @@ class ApiController extends Controller
         ]);
     }
 
+   
     public function initialize(Request $request)
     {
+
+
+
         $request->validate([
             "transaction_id" => 'required|string',
             "total_amount" => 'required|integer',
@@ -105,16 +158,16 @@ class ApiController extends Controller
 
         if ($transca && $request->gateway === 'orange') {
             $resData = $this->requestHeader()->post($this->baseUrl . '/gateway/makepayment', $requestData);
-            // $saveResponse->auth_token = $resData['data']['auth-token'];
-            // $saveResponse->paytoken = $resData['data']['paytoken'];
-            // $saveResponse->x_token = $resData['data']['x-token'];
+            $saveResponse->auth_token = $resData['data']['auth-token'];
+            $saveResponse->paytoken = $resData['data']['paytoken'];
+            $saveResponse->x_token = $resData['data']['x-token'];
         }
 
         $saveResponse->transaction_id = $resData['data']['transaction_id'] ?? '';
         $saveResponse->status = $resData['status'] ?? 'FAILED';
         $saveResponse->message = $resData['message'] ?? 'No Provider was selected';
         $saveResponse->save();
-ion
+
 
 
         // return $resData;
