@@ -36,7 +36,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
      * ),
      *  @OA\Response(
      *    response=200,
-     *    description="List of all marks or a single mark",
+     *    description="Success",
      *    @OA\JsonContent(
      *       @OA\Property(property="error", type="boolean", example="false"),
      *       @OA\Property(property="status_code", type="integer", example="200"),

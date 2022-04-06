@@ -5,60 +5,41 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/initializerrr": {
+        "/api/makepayment": {
             "post": {
                 "tags": [
                     "payunit"
                 ],
-                "summary": "Initialize payment",
-                "description": "Initialize payment",
+                "summary": "make a paymenment",
+                "description": "make payments",
                 "requestBody": {
-                    "description": "Pass initialize  credentials",
+                    "description": "pass make payment credentials",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
                                     "transaction_id",
-                                    "total_amount",
-                                    "currency",
-                                    "return_url"
+                                    "phone_number",
+                                    "gateway",
+                                    "paymentType"
                                 ],
                                 "properties": {
                                     "transaction_id": {
                                         "type": "string",
-                                        "format": "string",
                                         "example": "123456789101112"
                                     },
-                                    "total_amount": {
-                                        "type": "integer",
-                                        "format": "string",
-                                        "example": "2000"
-                                    },
-                                    "currency": {
+                                    "gateway": {
                                         "type": "string",
-                                        "format": "string",
-                                        "example": "XAF or USD"
-                                    },
-                                    "return_url": {
-                                        "type": "string",
-                                        "format": "string",
-                                        "example": "http://localhost:4000"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "format": "string",
                                         "example": "mtn or orange etc"
                                     },
-                                    "description": {
-                                        "type": "string",
-                                        "format": "string",
-                                        "example": "Your description"
+                                    "phone_number": {
+                                        "type": "integer",
+                                        "example": "670000000"
                                     },
-                                    "purchaseRef": {
+                                    "paymentType": {
                                         "type": "string",
-                                        "format": "string",
-                                        "example": "any_reference_number"
+                                        "example": "button"
                                     }
                                 },
                                 "type": "object"
@@ -68,14 +49,54 @@
                 },
                 "responses": {
                     "422": {
-                        "description": "Wrong credentials response",
+                        "description": "Unprocessable Entity",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": "422"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Unprocessable Entity"
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Sorry, wrong  transaction_id or total_amount, currency or return_url. Please try again"
+                                            "example": "The given data was invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": "401"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Unprocessable Entity"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred, please try again later."
                                         }
                                     },
                                     "type": "object"
@@ -84,7 +105,7 @@
                         }
                     },
                     "200": {
-                        "description": "List of all marks or a single mark",
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -103,7 +124,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Transaction  has been successfully initiated!"
+                                            "example": "Payment has been successfully made!"
                                         }
                                     },
                                     "type": "object"
@@ -111,7 +132,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/initialize": {
