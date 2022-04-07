@@ -219,7 +219,7 @@
                         }
                     },
                     "200": {
-                        "description": "List of all marks or a single mark",
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
