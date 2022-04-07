@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Str;
 
-$DATABASE_URL=parse_url("DATABASE_URL");
-
+$DATABASE_URL = parse_url(getenv("DATABASE_URL"));
 return [
 
     /*
@@ -12,7 +11,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may specify which of the database connections below you wish
-    | to use as your default connection for all database work. Of course
+    | t use as your default connection for all database work. Of course
     | you may use many connections at once using the Database library.
     |
     */
@@ -67,17 +66,15 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => $DATABASE_URL('host'),
-            'port' => $DATABASE_URL('port'),
-            'database' => ltrim($DATABASE_URL['path'],'/'),
-            'username' => $DATABASE_URL('user'),
-            'password' => $DATABASE_URL('pass'),
+            'host' => $DATABASE_URL["host"],
+            'port' => $DATABASE_URL["port"],
+            'database' => ltrim($DATABASE_URL["path"], "/"),
+            'username' => $DATABASE_URL["user"],
+            'password' => $DATABASE_URL["pass"],
             'charset' => 'utf8',
             'prefix' => '',
-            'prefix_indexes' => true,
             'schema' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => 'require'
         ],
 
         'sqlsrv' => [
