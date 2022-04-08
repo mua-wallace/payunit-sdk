@@ -14,7 +14,8 @@ class CreateIntializerTable extends Migration
     public function up()
     {
         Schema::create('initializer', function (Blueprint $table) {
-            $table->string('transaction_id')->primary();
+            $table->id();
+            $table->string('transaction_id')->unique();
             $table->integer('total_amount');
             $table->string('name')->nullable();
             $table->mediumText('description')->nullable();
