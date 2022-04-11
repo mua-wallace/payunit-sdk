@@ -67,7 +67,7 @@ class ApiController extends Controller
                 "return_url" => $request->return_url
             ]);
 
-            // Log::info('initializedata', $response);
+            Log::info('initialize data', compact('response'));
 
             if ($response->ok()) {
                 $initialiseData = new InitialzedData;
@@ -80,7 +80,7 @@ class ApiController extends Controller
                 return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
             }
 
-            return response('An error occured while initializing the request')->json([], 400);            
+            return $response->throw()->json();            
 
         } catch (\Exception $err) {
             Log::error($err);
