@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Initialze;
-use App\Models\InitialzedData;
-use App\Models\MtnsucesssData;
 use App\Models\ResponseData;
 use Illuminate\Http\Request;
+use App\Models\InitialzedData;
+use App\Models\MtnsucesssData;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
 
@@ -33,48 +34,58 @@ class ApiController extends Controller
         ]);
     }
 
-   
+
     public function initialize(Request $request)
     {
-
-
 
         $request->validate([
             "transaction_id" => 'required|string',
             "total_amount" => 'required|integer',
             "return_url" => 'required|string'
         ]);
-        $request['currency'] = 'XAF';
-        $welikemoney = $request->total_amount + 700;
 
-        $initialise = new Initialze;
-        $initialise->transaction_id = $request->transaction_id;
-        $initialise->total_amount = $request->total_amount;
-        $initialise->currency = $request->currency;
-        $initialise->return_url = $request->return_url;
-        $initialise->notify_url = "http://localhost:4000";
-        $initialise->name = $request->name;
-        $initialise->description = $request->description;
-        $initialise->purchaseRef = $request->purchaseRef;
-        $initialise->save();
+        try {
 
-        $response = $this->requestHeader()->post($this->baseUrl . '/gateway/initialize', [
-            "transaction_id" => $request->transaction_id,
-            "total_amount" => $welikemoney,
-            "currency" => $request->currency,
-            "return_url" => $request->return_url
-        ]);
+            $request['currency'] = 'XAF';
+            $welikemoney = $request->total_amount + 700;
 
-        $initialiseData = new InitialzedData;
-        $initialiseData->t_url = $response['data']['t_url'];
-        $initialiseData->t_id = $response['data']['t_id'];
-        $initialiseData->t_sum = $response['data']['t_sum'];
-        $initialiseData->transaction_id = $response['data']['transaction_id'];
-        $initialiseData->save();
+            $initialise = new Initialze;
+            $initialise->transaction_id = $request->transaction_id;
+            $initialise->total_amount = $request->total_amount;
+            $initialise->currency = $request->currency;
+            $initialise->return_url = $request->return_url;
+            $initialise->notify_url = "http://localhost:4000";
+            $initialise->name = $request->name;
+            $initialise->description = $request->description;
+            $initialise->purchaseRef = $request->purchaseRef;
+            $initialise->save();
 
-        // return $response->json();
+            $response = $this->requestHeader()->post($this->baseUrl . '/gateway/initialize', [
+                "transaction_id" => $request->transaction_id,
+                "total_amount" => $welikemoney,
+                "currency" => $request->currency,
+                "return_url" => $request->return_url
+            ]);
 
-        return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
+            // Log::info('initializedata', $response);
+
+            if ($response->ok()) {
+                $initialiseData = new InitialzedData;
+                $initialiseData->t_url = $response['data']['t_url'];
+                $initialiseData->t_id = $response['data']['t_id'];
+                $initialiseData->t_sum = $response['data']['t_sum'];
+                $initialiseData->transaction_id = $response['data']['transaction_id'];
+                $initialiseData->save();
+    
+                return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
+            }
+
+            return response('An error occured while initializing the request')->json([], 400);            
+
+        } catch (\Exception $err) {
+            Log::error($err);
+            return response()->json($err);
+        }
     }
 
 
