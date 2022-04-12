@@ -80,7 +80,7 @@ class ApiController extends Controller
                 return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
             }
 
-            return $response->throw()->json();            
+            // return $response->throw()->json();            
 
         } catch (\Exception $err) {
             Log::error($err);
