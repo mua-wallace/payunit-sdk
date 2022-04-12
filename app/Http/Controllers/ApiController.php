@@ -67,7 +67,7 @@ class ApiController extends Controller
                 "return_url" => $request->return_url
             ]);
 
-            Log::info('initialize data', compact('response'));
+            // Log::info('initialize data', compact('response'));
 
             if ($response->ok()) {
                 $initialiseData = new InitialzedData;
@@ -80,7 +80,7 @@ class ApiController extends Controller
                 return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
             }
 
-            // return $response->throw()->json();            
+            throw new  \Exception($response->message);           
 
         } catch (\Exception $err) {
             Log::error($err);
