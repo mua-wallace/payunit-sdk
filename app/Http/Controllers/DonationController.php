@@ -43,15 +43,17 @@ class DonationController extends Controller
 
     public function initialize()
     {
-        $apibasic = 'payunit_sand_A6Db0FGsw:d86d7f17-4d42-43c5-84f6-6bf9de8ac126';
-         $base64 = base64_encode($apibasic);
+        $apibasic = env('API_BASIC');
+        $base64 = base64_encode($apibasic);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => `Basic {$base64},
-            'x-api-key' => 'cdaec973655bfdd12a25222dc42a27c32a916a88',
+            'Authorization' => 'Basic ' . $base64,
+            'x-api-key' => env('X_API_KEY'),
             'mode' => 'test'
         ])->post('https://app.payunit.net/api/gateway/initialize');
         return $response->json();
     }
     
 }
+
+    
