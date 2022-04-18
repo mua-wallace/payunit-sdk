@@ -80,11 +80,12 @@ class ApiController extends Controller
                 return $this->getAllPSP($initialiseData->t_url, $initialiseData->t_id, $initialiseData->t_sum);
             }
 
-            throw new  \Exception($response->message);           
+            throw new  \Exception($response);           
 
         } catch (\Exception $exception) {
         //    return  ($err->getMessage());
-        throw new \Exception($exception->getMessage());
+        // throw new \Exception($exception->getMessage());
+        dd($response);
         }
     }
 
