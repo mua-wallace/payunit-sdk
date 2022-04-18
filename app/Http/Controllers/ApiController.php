@@ -85,7 +85,7 @@ class ApiController extends Controller
         } catch (\Exception $exception) {
         //    return  ($err->getMessage());
         // throw new \Exception($exception->getMessage());
-        dd($response);
+        dd($exception->getMessage());
         }
     }
 
