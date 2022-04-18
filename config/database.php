@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Str;
 
-// $DATABASE_URL = parse_url('postgres://rgpjvwrpiwpche:62240c41d90af52bce39a57bb18154fab97b6107e572fd0adb99ca2f11593ee0@ec2-3-229-252-6.compute-1.amazonaws.com:5432/d8a6vg0f7ctae7');
+$DATABASE_URL = parse_url('postgres://rgpjvwrpiwpche:62240c41d90af52bce39a57bb18154fab97b6107e572fd0adb99ca2f11593ee0@ec2-3-229-252-6.compute-1.amazonaws.com:5432/d8a6vg0f7ctae7');
 
-$DATABASE_URL= parse_url('DATABASE_URL');
+// $DATABASE_URL= parse_url('DATABASE_URL');
 
 // $url = parse_url(getenv("CLEARDB_DATABASE_URL"));
 // $host = $url["host"] ?? null;
@@ -74,11 +74,11 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => $DATABASE_URL["host"],
-            'port' => $DATABASE_URL["port"],
+            // 'host' => $DATABASE_URL["host"],
+            // 'port' => $DATABASE_URL["port"],
             'database' => ltrim($DATABASE_URL["path"], "/"),
-            'username' => $DATABASE_URL["user"],
-            'password' => $DATABASE_URL["pass"],
+            // 'username' => $DATABASE_URL["user"],
+            // 'password' => $DATABASE_URL["pass"],
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
