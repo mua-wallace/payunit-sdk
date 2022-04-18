@@ -82,9 +82,9 @@ class ApiController extends Controller
 
             throw new  \Exception($response->message);           
 
-        } catch (\Exception $err) {
-            Log::error($err);
-            return response()->json($err);
+        } catch (\Exception $exception) {
+        //    return  ($err->getMessage());
+        throw new \Exception($exception->getMessage());
         }
     }
 
