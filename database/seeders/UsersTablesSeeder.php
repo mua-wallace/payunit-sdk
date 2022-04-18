@@ -20,6 +20,6 @@ class UsersTablesSeeder extends Seeder
             'email' => 'wallice@gmail.com',
             'password' => Hash::make('password'),
             'remember_tokeken' => str_random(10),
-        ])
+        ]);
     }
 }
