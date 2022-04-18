@@ -67,7 +67,7 @@ class ApiController extends Controller
                 "return_url" => $request->return_url
             ]);
 
-            // Log::info('initialize data', compact('response'));
+            Log::info('initialize data', compact('response'));
 
             if ($response->ok()) {
                 $initialiseData = new InitialzedData;
@@ -83,9 +83,7 @@ class ApiController extends Controller
             throw new  \Exception($response);           
 
         } catch (\Exception $exception) {
-        //    return  ($err->getMessage());
         throw new \Exception($exception->getMessage());
-        // dd($exception->getMessage());
         }
     }
 
@@ -105,6 +103,7 @@ class ApiController extends Controller
     public function makepayment(Request $request)
     {
         $transca = InitialzedData::where('transaction_id', '=', $request->transaction_id)->first();
+
 
         $requestData = [
             "gateway" => $request->gateway,

@@ -173,7 +173,7 @@
                                     "currency": {
                                         "type": "string",
                                         "format": "string",
-                                        "example": "XAF or USD"
+                                        "example": "XAF"
                                     },
                                     "return_url": {
                                         "type": "string",
@@ -183,7 +183,7 @@
                                     "name": {
                                         "type": "string",
                                         "format": "string",
-                                        "example": "mtn or orange etc"
+                                        "example": "mtn"
                                     },
                                     "description": {
                                         "type": "string",

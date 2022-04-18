@@ -10,4 +10,5 @@ class ResponseData extends Model
     use HasFactory;
 
     protected $table = 'responsedata';
+    
 }
