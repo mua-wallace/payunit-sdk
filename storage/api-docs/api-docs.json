@@ -2,6 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Payunit REST API",
+        "description": "Integrating PayUnit REST API with Swagger",
         "version": "1.0.0"
     },
     "paths": {
@@ -27,11 +28,11 @@
                                 "properties": {
                                     "transaction_id": {
                                         "type": "string",
-                                        "example": "123456789101112"
+                                        "example": "233333332323234"
                                     },
                                     "gateway": {
                                         "type": "string",
-                                        "example": "mtn or orange etc"
+                                        "example": "mtnmomo or orange etc"
                                     },
                                     "phone_number": {
                                         "type": "integer",
@@ -223,30 +224,41 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "boolean",
-                                            "example": "false"
-                                        },
-                                        "status_code": {
-                                            "type": "integer",
-                                            "example": "200"
-                                        },
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Transaction  has been successfully initiated!"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Initialze"
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Initialze": {
+                "properties": {
+                    "transaction_id": {
+                        "description": "This transaction should be unique per request and it should   be a string  This id should be alphanumeric and less than 20 characters",
+                        "type": "string"
+                    },
+                    "total_amount": {
+                        "description": "The amount to be paid",
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "description": "The currency you want to use: XAF",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name of the merchant",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "A description you can give to this type of  transaction",
+                        "type": "mediumText"
+                    }
+                },
+                "type": "object"
             }
         }
     }

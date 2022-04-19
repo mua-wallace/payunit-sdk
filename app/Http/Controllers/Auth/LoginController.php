@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
      * @OA\Post(
      * path="/api/initialize",
      * summary="Initialize payment",
+     * 
      * description="Initialize payment",
      * tags={"payunit"},
      * @OA\RequestBody(
@@ -38,11 +39,14 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
      *    response=200,
      *    description="Success",
      *    @OA\JsonContent(
+     *       type="object", ref="#/components/schemas/Initialze",
      *       @OA\Property(property="error", type="boolean", example="false"),
      *       @OA\Property(property="status_code", type="integer", example="200"),
      *       @OA\Property(property="status", type="string", example="success"),
      *       @OA\Property(property="message", type="string", example="Transaction  has been successfully initiated!"),
      *    )
+     *   
+     *
      * ),
      * )
      */
