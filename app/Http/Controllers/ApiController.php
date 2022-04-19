@@ -141,17 +141,16 @@ class ApiController extends Controller
 
 
         // return $resData;
-        return $saveResponse;
+        // return $saveResponse;
 
-        // if ($saveResponse && $saveResponse->gateway === 'mtnmomo') {
-        //     return $this->getpaymentstatus($saveResponse->gateway, $saveResponse->transaction_id, $saveResponse->pay_token, $saveResponse->payment_ref);
-        // }
+        if ($saveResponse && $saveResponse->gateway === 'mtnmomo') {
+            return $this->getpaymentstatus($saveResponse->gateway, $saveResponse->transaction_id, $saveResponse->pay_token, $saveResponse->payment_ref);
+        }
 
-        // if ($saveResponse && $saveResponse->gateway === 'orange') {
-        //     return $this->getpaymentstatus($saveResponse->gateway, $saveResponse->transaction_id, $saveResponse->paytoken, $saveResponse->auth_token, $saveResponse->x_token);
-        // }
+        if ($saveResponse && $saveResponse->gateway === 'orange') {
+            return $this->getpaymentstatus($saveResponse->gateway, $saveResponse->transaction_id, $saveResponse->paytoken, $saveResponse->auth_token, $saveResponse->x_token);
+        }
     }
-    // dd($transca->initialize);
 
 
 
@@ -172,7 +171,6 @@ class ApiController extends Controller
 
     public function transactionStatus()
     {
-        // $status = DB::select('select * from mtnsucessdata where status');
         $datas = MtnsucesssData::where('status', '=', 'SUCCESS')->get();
         $count = count($datas);
         $number_new_success_transaction = 0;
