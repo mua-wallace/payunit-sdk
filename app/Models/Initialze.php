@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Model;
 class Initialze extends Model
 {
     use HasFactory;
+
     /**
      * $transaction_id
      * @OA\Property(property ="transaction_id",type="string",description="This transaction should be unique per request and it should   be a string  This id should be alphanumeric and less than 20 characters")
      *
      * @var string
      */
+    
     public $transaction_id;
 
     /**
