@@ -11,7 +11,6 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
      * @OA\Post(
      * path="/api/initialize",
      * summary="Initialize payment",
-     * 
      * description="Initialize payment",
      * tags={"payunit"},
      * @OA\RequestBody(
@@ -19,7 +18,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
      *    description="Pass initialize  credentials",
      *    @OA\JsonContent(
      *       required={"transaction_id","total_amount", "currency", "return_url"},
-     *       @OA\Property(property="transaction_id", type="string", format="string", example="123456789101112"),
+     *       @OA\Property(property="transaction_id", type="string", format="string", example="34444453456233"),
      *       @OA\Property(property="total_amount", type="integer", format="string", example="2000"),
      *       @OA\Property(property="currency", type="string", format="string", example="XAF"),
      *       @OA\Property(property="return_url", type="string", format="string", example="http://localhost:4000"),
@@ -45,8 +44,6 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
      *       @OA\Property(property="status", type="string", example="success"),
      *       @OA\Property(property="message", type="string", example="Transaction  has been successfully initiated!"),
      *    )
-     *   
-     *
      * ),
      * )
      */

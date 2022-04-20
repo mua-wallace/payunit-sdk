@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Payunit REST API",
-        "description": "Integrating PayUnit REST API with Swagger",
+        "description": "Integrating payunit REST API with Swagger",
         "version": "1.0.0"
     },
     "paths": {
@@ -28,11 +28,11 @@
                                 "properties": {
                                     "transaction_id": {
                                         "type": "string",
-                                        "example": "233333332323234"
+                                        "example": "123456789101112"
                                     },
                                     "gateway": {
                                         "type": "string",
-                                        "example": "mtnmomo or orange etc"
+                                        "example": "mtn or orange etc"
                                     },
                                     "phone_number": {
                                         "type": "integer",
@@ -164,7 +164,7 @@
                                     "transaction_id": {
                                         "type": "string",
                                         "format": "string",
-                                        "example": "123456789101112"
+                                        "example": "34444453456233"
                                     },
                                     "total_amount": {
                                         "type": "integer",
@@ -237,22 +237,6 @@
         "schemas": {
             "Initialze": {
                 "properties": {
-                    "transaction_id": {
-                        "description": "This transaction should be unique per request and it should   be a string  This id should be alphanumeric and less than 20 characters",
-                        "type": "string"
-                    },
-                    "total_amount": {
-                        "description": "The amount to be paid",
-                        "type": "integer"
-                    },
-                    "currency": {
-                        "description": "The currency you want to use: XAF",
-                        "type": "string"
-                    },
-                    "name": {
-                        "description": "Name of the merchant",
-                        "type": "string"
-                    },
                     "description": {
                         "description": "A description you can give to this type of  transaction",
                         "type": "mediumText"

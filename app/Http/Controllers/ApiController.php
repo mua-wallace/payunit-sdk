@@ -39,14 +39,15 @@ class ApiController extends Controller
     {
 
         $request->validate([
-            "transaction_id" => 'required|string',
+            "transaction_id" => array('required', 'string', 'regex:(^\w+$){2,4}'),
             "total_amount" => 'required|integer',
-            "return_url" => 'required|string'
+            "return_url" => 'required|string',
+            "currency" => array('required', 'string','regex:/^(XAF|USD)$/'),
         ]);
 
         try {
 
-            $request['currency'] = 'XAF';
+        
             $welikemoney = $request->total_amount + 700;
 
             $initialise = new Initialze;
@@ -102,6 +103,15 @@ class ApiController extends Controller
 
     public function makepayment(Request $request)
     {
+
+        $request->validate([
+           
+            "total_amount" => 'required|integer',
+            "phone_number" => 'required',
+            "currency" => array('required', 'string','regex:/^(XAF|USD)$/'),
+            "name" => 'string',
+        ]);
+
         $transca = InitialzedData::where('transaction_id', '=', $request->transaction_id)->first();
 
 

@@ -11,7 +11,7 @@ use Illuminate\Routing\Controller as BaseController;
  * @OA\Info(
  *    title="Payunit REST API",
  *    version="1.0.0",
- *    description="Integrating PayUnit REST API with Swagger",
+ *    description ="Integrating payunit REST API with Swagger",
  * )
  */
 class Controller extends BaseController

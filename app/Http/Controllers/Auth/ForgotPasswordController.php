@@ -17,8 +17,8 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
  *    description="pass make payment credentials",
  *    @OA\JsonContent(
  *       required={"transaction_id", "phone_number", "gateway", "paymentType"},
- *       @OA\Property(property="transaction_id", type="string", example="233333332323234"),
- *       @OA\Property(property="gateway", type="string", example="mtnmomo or orange etc"),
+ *       @OA\Property(property="transaction_id", type="string", example="123456789101112"),
+ *       @OA\Property(property="gateway", type="string", example="mtn or orange etc"),
  *       @OA\Property(property="phone_number", type="integer", example="670000000"),
  *       @OA\Property(property="paymentType", type="string", example="button"),
  *    ),
