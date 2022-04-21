@@ -39,7 +39,7 @@ class ApiController extends Controller
     {
 
         $request->validate([
-            "transaction_id" => array('required', 'string', 'regex:(^\w+$){2,4}'),
+            "transaction_id" => array('required', 'string'),
             "total_amount" => 'required|integer',
             "return_url" => 'required|string',
             "currency" => array('required', 'string','regex:/^(XAF|USD)$/'),
