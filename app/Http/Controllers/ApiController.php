@@ -7,6 +7,7 @@ use App\Models\ResponseData;
 use Illuminate\Http\Request;
 use App\Models\InitialzedData;
 use App\Models\MtnsucesssData;
+use App\Rules\PhoneValidator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
@@ -106,10 +107,8 @@ class ApiController extends Controller
 
         $request->validate([
            
-            "total_amount" => 'required|integer',
-            "phone_number" => 'required',
-            "currency" => array('required', 'string','regex:/^(XAF|USD)$/'),
-            "name" => 'string',
+            
+            "phone_number" => array('required', new PhoneValidator),
         ]);
 
         $transca = InitialzedData::where('transaction_id', '=', $request->transaction_id)->first();

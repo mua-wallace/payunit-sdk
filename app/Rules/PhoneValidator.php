@@ -25,7 +25,7 @@ class PhoneValidator implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+        return preg_match('/^([6]([7]))([0-9]{7})|^([6]([8]))([0-9]{7})|^([6]([5]))([0-4]{1})([0-9]{6})|^([6]([9]))([0-9]{7})|^([6]([5]))([5-8]{1})([0-9]{6})|^([6]([5])([9])([0-4]{1})([0-9]{5}))/', $value) && strlen($value) == 9;
     }
 
     /**
@@ -35,6 +35,6 @@ class PhoneValidator implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'the number you telephone number you entered is not correct.';
     }
 }
